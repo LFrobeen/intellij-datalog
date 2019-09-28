@@ -1,0 +1,363 @@
+{
+  parserClass="com.lfrobeen.datalog.lang.parser.DatalogParser"
+  parserUtilClass="com.lfrobeen.datalog.lang.parser.DatalogParserUtil"
+
+  extends="com.lfrobeen.datalog.lang.psi.DatalogCompositePsiElement"
+
+  psiClassPrefix="Datalog"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.lfrobeen.datalog.lang.psi"
+  psiImplPackage="com.lfrobeen.datalog.lang.psi.impl"
+
+  elementTypeHolderClass="com.lfrobeen.datalog.lang.psi.DatalogTypes"
+  elementTypeClass="com.lfrobeen.datalog.lang.psi.DatalogElementType"
+  tokenTypeClass="com.lfrobeen.datalog.lang.psi.DatalogTokenType"
+
+  tokens = [
+    WHITE_SPACE='regexp:[ \t\f\r\n]+'
+    WHITE_SPACE_NON_BREAKING='regexp:[ \t\f]+'
+    LINE_BREAK = 'regexp:\r|\n|\r\n'
+
+    INCLUDE_DIRECTIVE = "#include"
+    IFDEF_DIRECTIVE = "#ifdef"
+    IFNDEF_DIRECTIVE = "#ifndef"
+    ELIF_DIRECTIVE = "#elif"
+    ELSE_DIRECTIVE = "#else"
+    ENDIF_DIRECTIVE = "#endif"
+    DEFINE_DIRECTIVE = "#define"
+
+    NUMBER_TYPE = "number"
+    SYMBOL_TYPE = "symbol"
+
+    NIL = "nil"
+
+    COMP_DIRECTIVE = ".comp"
+    RELATION_DIRECTIVE = ".decl"
+    TYPE_DIRECTIVE = ".type"
+    TYPE_SYM_DIRECTIVE = ".symbol_type"
+    TYPE_NUM_DIRECTIVE = ".number_type"
+    INIT_DIRECTIVE = ".init"
+    INPUT_DIRECTIVE = ".input"
+    OUTPUT_DIRECTIVE = ".output"
+    PRINTSIZE_DIRECTIVE = ".printsize"
+    OVERRIDE_DIRECTIVE = ".override"
+    PRAGMA_DIRECTIVE = ".pragma"
+    FUNCTOR_DIRECTIVE = ".functor"
+
+    UNDERSCORE = "_"
+    DOLLAR='$'
+
+    STRING = 'regexp:"[^"]*"'
+
+    NUMBER_BIN = 'regexp:0b[0-1]+'
+    NUMBER_HEX = 'regexp:0x[a-fA-F0-9]+'
+    NUMBER_DEC = 'regexp:0|([1-9][0-9]*)'
+
+    COMMENT = 'regexp:(//.*)|(/*([^/]*)\*/)'
+
+    TRUE="true"
+    FALSE="false"
+
+    COUNT="count"
+    MIN="max"
+    MAX="min"
+    SUM="sum"
+
+    IDENTIFIER = 'regexp:[_?a-zA-Z][_?a-zA-Z0-9]+|[?a-zA-Z]'
+
+    PIPE='|'
+    DOT='.'
+    NOT='!'
+    IF=':-'
+    COMMA=','
+    COLON=':'
+    AS='as'
+    AT='@'
+    SEMICOLON=';'
+    LPARENTH='('
+    RPARENTH=')'
+    LBRACKET='['
+    RBRACKET=']'
+    LBRACE='{'
+    RBRACE='}'
+    LNOT='lnot'
+    LOR='lor'
+    LAND='land'
+    BNOT='bnot'
+    BAND='band'
+    BXOR='bxor'
+    BOR='bor'
+    MUL='*'
+    RDIV='/'
+    PLUS='+'
+    MINUS='-'
+    MOD='%'
+    POW='^'
+    EQUAL='='
+    NOT_EQUAL='!='
+    LESS='<'
+    LESS_OR_EQUAL='<='
+    MORE='>'
+    MORE_OR_EQUAL='>='
+
+    MACRO_CONTINUATION='regexp:\\[ \t\f]*(\r|\n|\r\n)'
+  ]
+
+  mixin(".*Ref")="com.lfrobeen.datalog.lang.psi.DatalogReferenceMixin"
+
+  extends("Predicate.*")=Predicate
+  extends(".*Expr")=Argument
+  extends(".*Decl")=Decl
+  extends(".*Type")=Type
+}
+
+Root ::= Program
+
+private meta listCommaBracket ::=
+    "[" (<<item>> ("," <<item>>)*)?
+        {pin=1 recoverWhile=listCommaBracket_recover}
+
+private meta listCommaParens ::=
+    "(" (<<item>> ("," <<item>>)*)?
+        {pin=1 recoverWhile=listCommaParens_recover}
+
+private listCommaBracket_recover ::= !("]" | ProgramElement_first)
+private listCommaParens_recover ::= !(")" | ProgramElement_first)
+
+private Program ::= ProgramElement_withRecover*
+
+ProgramElement ::= Statement | Preprocessor | CompDecl | Pragma | AnyReferenceWithDot
+
+private ProgramElement_withRecover ::= !('}' | <<eof>>) ProgramElement {
+    pin = 1
+    recoverWhile = ProgramElement_recover
+}
+
+private ProgramElement_recover ::= !('}' | ProgramElement_first)
+
+private ProgramElement_first ::= (
+    ".decl" | ".type" |
+    ".comp" | ".init" |
+    ".functor" |
+    ".input" | ".output" | ".printsize" |
+    ".pragma" |
+    ".symbol_type" | ".number_type" |
+    DEFINE_DIRECTIVE | IFDEF_DIRECTIVE | IFNDEF_DIRECTIVE | ENDIF_DIRECTIVE | INCLUDE_DIRECTIVE |
+    IDENTIFIER)
+
+
+CompParameter ::= IDENTIFIER {
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
+}
+
+CompDecl ::= ".comp" IDENTIFIER ("<"CompParameter ("," CompParameter)*">")? (":" ComponentTyped)? "{" ProgramElement_withRecover* "}" {
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
+    pin = 2
+}
+
+CompInstDecl ::= ".init" IDENTIFIER "=" ComponentTyped {
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
+    pin = 2
+}
+
+ComponentTyped ::= AnyRef ("<"TypeReference ("," TypeReference)*">")?
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Preprocessor
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Preprocessor ::= (IFDEF_DIRECTIVE AnyRef)
+               | (IFNDEF_DIRECTIVE AnyRef)
+               | ENDIF_DIRECTIVE
+               | Include
+               | (MacroDecl (LINE_BREAK | <<eof>>))
+               | MacroInvocation
+
+MacroElement ::= (MACRO_CONTINUATION | IDENTIFIER | MACRO_TOKEN | Constant)
+
+MacroDecl ::= "#define" IDENTIFIER MacroElement*  {
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
+}
+
+MacroInvocation ::= AnyRef <<listCommaParens MacroParameter>> ")"
+MacroParameter ::= Constant | Literal | AnyReference | "("Predicate")" | MacroInvocation
+
+Include ::= "#include" STRING {
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogIncludeMixin"
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Statements
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Statement ::= Decl | Fact | Clause
+
+Decl ::= RelDecl
+       | TypeDecl
+       | InDecl
+       | FunctorDecl
+       | OutDecl
+       | SizeDecl
+       | CompInstDecl
+
+RelDecl ::= ".decl" IDENTIFIER <<listCommaParens TypedIdentifier>> ")" { // QUALIFIERS
+    pin=2
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
+}
+
+TypeDecl ::= ".type" IDENTIFIER "=" TypeDef
+          | ".type" IDENTIFIER
+          | ".symbol_type" IDENTIFIER
+          | ".number_type" IDENTIFIER
+{
+    pin(".*")=2
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
+}
+
+FunctorDecl ::= ".functor" IDENTIFIER <<listCommaParens PrimitiveType>> ")" ":" PrimitiveType {
+    pin=2
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
+}
+
+SizeDecl ::= ".printsize" AnyReference
+OutDecl ::= ".output" AnyReference ("(" "IO" "=" "stdout" ")")?
+InDecl ::= ".input" AnyReference
+
+private TypeReference ::= AnyReference
+//private CompReference ::= AnyReference
+
+AnyRef ::= IDENTIFIER
+AnyReference ::= AnyRef MemberReference* {
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogReferenceQualifierMixin"
+}
+
+AnyReferenceWithDot ::= AnyRef MemberReference+ {
+    elementType=AnyReference
+}
+
+left MemberReference ::= "." AnyRef {
+    elementType=AnyReference
+    pin=1
+}
+
+TypedIdentifier ::= Variable ":" Type
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Datalog Primitives
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Fact ::= Atom "."
+Clause ::= ClauseHead ":-" ClauseBody "." {
+    pin=2
+    recoverWhile=Clause_recover
+}
+
+private Clause_recover ::= !("}" | ProgramElement_first)
+
+ClauseHead ::= Atom
+ClauseBody ::= Predicate {pin=1 recoverWhile=ClauseBody_recover}
+
+private ClauseBody_recover ::= !(ProgramElement_first | ".")
+
+Predicate ::= PredicateNegation
+            | PredicateConjunction
+            | PredicateDisjunction
+            | PredicateAssociation
+            | PredicateLiteral
+
+PredicateLiteral ::= Literal
+
+PredicateConjunction ::= Predicate ("," Predicate)+
+PredicateDisjunction ::= Predicate (";" Predicate)+
+PredicateAssociation ::= "(" (PredicateConjunction | PredicateDisjunction) ")"
+
+PredicateNegation ::= "!" (
+    PredicateNegation
+    | PredicateAssociation
+    | PredicateLiteral
+)
+
+Literal ::= Atom
+          | Boolean
+          | Argument RelOp Argument
+          | "match" "(" Argument "," Argument ")"
+          | "contains" "(" Argument "," Argument ")"
+
+Atom ::= AnyReference ArgumentList
+
+//AtomPinned ::= Atom | AtomPinned_inner
+//
+//private AtomPinned_inner ::= AnyReferenceWithDot ArgumentList {pin=1}
+
+ArgumentList ::= <<listCommaParens Argument>> ")"
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Arguments
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Argument ::= AggregationExpr
+       | FunctorExpr
+       | MacroExpr
+       | SimpleExpr
+       | TupleExpr
+       | BinOpExpr
+       | AsExpr
+       | AssocExpr
+
+SimpleExpr ::= Constant
+             | Variable
+             | "_"
+             | "$"
+
+AssocExpr ::= "(" Argument ")"
+TupleExpr ::= <<listCommaBracket Argument>> "]" | "[" "]"
+
+FunctorExpr ::= "@" AnyRef <<listCommaParens Argument>> ")"
+MacroExpr ::= AnyRef <<listCommaParens (Argument | MacroParameter)>> ")"
+
+BinOpExpr ::= Argument BinOp Argument
+AsExpr ::= Argument "as" Variable
+
+Constant ::= Number
+           | Boolean
+           | STRING
+           | NIL
+
+Variable ::= IDENTIFIER {
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationBase"
+}
+
+AggregationExpr ::= "count" ":" "{" Predicate "}"
+                  | "min" ":" Variable "{" Predicate "}"
+                  | "max" ":" Variable "{" Predicate "}"
+                  | "sum" ":" Variable "{" Predicate "}"
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Types
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Type ::= AnyReference
+       | PrimitiveType
+
+PrimitiveType ::= NUMBER_TYPE | SYMBOL_TYPE
+
+TypeDef ::= EmptyTypeDef
+          | RecordTypeDef
+          | UnionTypeDef
+          | Type
+
+EmptyTypeDef ::= "[""]"
+RecordTypeDef ::= <<listCommaBracket TypedIdentifier>> "]"
+UnionTypeDef ::= (Type "|" Type) ("|" Type)*
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Misc & Helpers
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Pragma ::= ".pragma" STRING STRING?
+
+BinOp ::= "+" | "-" | "*" | "/" | "%" | "^"
+        | "bnot" | "band" | "bor" | "bxor"
+        | "lnot" | "land" | "lor"
+
+RelOp ::= "<" | ">" | "<=" | ">=" | "!=" | "=";
+
+private Number ::= '-'? (NUMBER_HEX | NUMBER_BIN | NUMBER_DEC)
+private Boolean ::= TRUE | FALSE

@@ -1,0 +1,53 @@
+<?xml version='1.0'?>
+<list>
+    <option name="datalog.RELATION">
+        <value>
+            <option name="FOREGROUND" value="#0053E0"/>
+        </value>
+    </option>
+
+    <option name="datalog.MACRO">
+        <value>
+            <option name="FOREGROUND" value="#dd6718"/>
+        </value>
+    </option>
+
+    <option name="datalog.PREPROCESSOR">
+        <value>
+            <option name="FOREGROUND" value="#008085"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+
+    <option name="datalog.TYPE_PRIMITIVE">
+        <value>
+            <option name="FOREGROUND" value="#008277"/>
+        </value>
+    </option>
+
+    <option name="datalog.TYPE_DERIVED">
+        <value>
+            <option name="FOREGROUND" value="#008277"/>
+        </value>
+    </option>
+
+    <option name="datalog.COMPONENT">
+        <value>
+            <option name="FOREGROUND" value="#808000"/>
+        </value>
+    </option>
+
+    <option name="datalog.VARIABLE">
+        <value>
+            <option name="FONT_TYPE" value="2" />
+        </value>
+    </option>
+
+    <option name="datalog.INSTANCE">
+        <value>
+            <option name="FOREGROUND" value="#000000"/>
+            <option name="EFFECT_COLOR" value="#000000" />
+            <option name="EFFECT_TYPE" value="1" />
+        </value>
+    </option>
+</list>

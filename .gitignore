@@ -1,0 +1,11 @@
+.idea/*
+!.idea/runConfigurations
+*.iml
+.gradle
+out/
+build/
+gen/
+deps/
+exampleProject
+testData
+.DS_Store

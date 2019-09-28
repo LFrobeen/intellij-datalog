@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" version="1.1" viewBox="0 0 32 32">
+    <g opacity=".7">
+        <rect x="2" y="18" width="30" height="14" fill="#2da18a" opacity="1"/>
+
+        <path d="m16 2v10h-10v4h20v-14z" fill="#99a8b0" opacity="1"/>
+        <path d="m14 2v8h-8z" fill="#99a8b0" opacity="1"/>
+
+        <text style="line-height:125%;"
+              transform="matrix(1.1 0 0 1 0 0)"
+              x="3"
+              y="30"
+              fill="#232020"
+              opacity=".9">
+            <tspan
+                    font-weight="bold"
+                    font-size="13px"
+                    font-family="Arial, Helvetica, sans-serif">
+                DL
+            </tspan>
+        </text>
+    </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 32 32">
+    <circle cx="50%"
+            cy="50%" r="14" fill="#42ff81" fill-opacity=".6"/>
+
+    <text x="50%"
+          y="70%"
+          text-anchor="middle"
+          fill="#3C3F41"
+          fill-opacity="0.9" transform="scale(1 1)"
+          font-family="Arial, Helvetica, sans-serif">
+        <tspan font-size="16px">C</tspan>
+    </text>
+</svg>

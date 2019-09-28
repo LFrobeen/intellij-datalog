@@ -1,0 +1,65 @@
+#ifndef FAMILY_FACT_COMP
+#define FAMILY_FACT_COMP
+
+#include "my-utils.dl"
+
+// Types
+.symbol_type Name
+.number_type Year
+
+.type PersonType = [
+    name: Name,
+    bornIn: Year
+]
+
+// Helper Macros
+#define PERSON(name, year) [name, year]
+
+// Constants
+#define ALICE PERSON("Alice", 1962)
+#define BOB   PERSON("Bob", 1960)
+#define DAVE  PERSON("Dave", 1984)
+#define EVE   PERSON("Eve", 1984)
+
+// Component Instances
+.init family = FamilyRelations<PersonType>
+
+// Initialize the component here
+family.childOf(DAVE, ALICE, BOB).
+family.childOf(EVE, ALICE, BOB).
+family.childOf(BOB, ["Grandma", 1940], ["Grandpa", 1938]).
+
+.decl numberOfRelatives(person: PersonType, num_relatives: number)
+
+numberOfRelatives(person, num_relatives) :-
+    family.related(person, _),
+    num_relatives = count : { family.related(person, _) }.
+
+.output numberOfRelatives(IO=stdout)
+
+/** This component computes relations for a  */
+.comp FamilyRelations<TPerson> {
+    .decl childOf(child: TPerson, mother: TPerson, father: TPerson)
+
+    .decl related(s: TPerson, p: TPerson)
+
+    .decl descendantOf(s: TPerson, p: TPerson)
+    .decl commonAncestor(s: TPerson, p: TPerson)
+
+    descendantOf(C, P) :- childOf(C, P, _).
+    descendantOf(C, P) :- childOf(C, _, P).
+
+    descendantOf(C, G) :- descendantOf(C, P),
+                          descendantOf(P, G).
+
+    commonAncestor(C1, C2) :-
+        descendantOf(C1, A),
+        descendantOf(C2, A),
+        C1 != C2.
+
+    related(A, B) :- commonAncestor(A, B).
+    related(A, B) :- descendantOf(A, B).
+    related(A, B) :- related(B, A).
+}
+
+#endif

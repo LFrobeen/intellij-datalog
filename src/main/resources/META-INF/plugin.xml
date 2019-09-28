@@ -1,0 +1,118 @@
+<idea-plugin>
+    <id>com.lfrobeen.intellij-datalog</id>
+    <name>Datalog Language Support</name>
+    <category>Custom Language</category>
+    <vendor url="https://github.com/LFrobeen/intellij-datalog">Lavrenti Frobeen</vendor>
+
+    <description>
+        <![CDATA[
+            Datalog language support for JetBrains products.
+        ]]>
+    </description>
+
+    <change-notes>
+        <![CDATA[
+        <p>1.0.0</p>
+        <ul>
+            <li>Initial release of this plugin.</li>
+        </ul>
+        ]]>
+    </change-notes>
+
+    <version>1.0.0</version>
+
+    <idea-version since-build="183.2940.10"/>
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileTypeFactory implementation="com.lfrobeen.datalog.lang.DatalogFileTypeFactory"/>
+
+        <lang.syntaxHighlighterFactory language="Datalog"
+                                       implementationClass="com.lfrobeen.datalog.ide.highlight.DatalogSyntaxHighlighterFactory"/>
+
+        <lang.parserDefinition language="Datalog" implementationClass="com.lfrobeen.datalog.lang.parser.DatalogParserDefinition"/>
+
+
+        <!-- Line Marker Providers -->
+        <!--        <codeInsight.lineMarkerProvider language="Datalog"-->
+        <!--                                        implementationClass="com.lfrobeen.datalog.ide.lineMarkers.DatalogRuleToRelationLineMarkerProvider"/>-->
+        <codeInsight.lineMarkerProvider language="Datalog"
+                                        implementationClass="com.lfrobeen.datalog.ide.lineMarkers.DatalogRelationToRulesLineMarkerProvider"/>
+
+        <codeInsight.lineMarkerProvider language="Datalog"
+                                        implementationClass="com.lfrobeen.datalog.ide.lineMarkers.DatalogBaseComponentLineMarkerProvider"/>
+
+        <!-- Completion -->
+        <completion.contributor language="Datalog"
+                                implementationClass="com.lfrobeen.datalog.lang.completion.DatalogKeywordCompletionContributor"/>
+
+        <completion.contributor language="Datalog"
+                                implementationClass="com.lfrobeen.datalog.lang.completion.DatalogReferenceCompletionContributor"/>
+
+        <lang.formatter language="Datalog" implementationClass="com.lfrobeen.datalog.ide.formatter.DatalogFormattingModelBuilder"/>
+
+        <lang.documentationProvider language="Datalog"
+                                    implementationClass="com.lfrobeen.datalog.ide.docs.DatalogDocumentationProvider"/>
+
+        <lang.ast.factory language="Datalog" implementationClass="com.lfrobeen.datalog.lang.DatalogASTFactory"/>
+
+        <lang.elementManipulator forClass="com.lfrobeen.datalog.lang.psi.DatalogReferenceMixin"
+                                 implementationClass="com.lfrobeen.datalog.lang.psi.DatalogElementManipulator"/>
+
+        <lang.elementManipulator forClass="com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationBase"
+                                 implementationClass="com.lfrobeen.datalog.lang.psi.DatalogVariableManipulator"/>
+
+        <codeInsight.parameterInfo language="Datalog"
+                                   implementationClass="com.lfrobeen.datalog.ide.hints.DatalogParameterInfoHandler"/>
+
+        <lang.foldingBuilder language="Datalog" implementationClass="com.lfrobeen.datalog.ide.folding.DatalogFoldingBuilder"/>
+
+        <lang.findUsagesProvider language="Datalog"
+                                 implementationClass="com.lfrobeen.datalog.ide.search.DatalogFindUsagesProvider"/>
+        <lang.commenter language="Datalog" implementationClass="com.lfrobeen.datalog.ide.commenter.DatalogCommenter"/>
+        <lang.braceMatcher language="Datalog" implementationClass="com.lfrobeen.datalog.ide.typing.DatalogBraceMatcher"/>
+
+        <annotator language="Datalog" implementationClass="com.lfrobeen.datalog.ide.annotator.DatalogHighlightingAnnotator"/>
+        <annotator language="Datalog" implementationClass="com.lfrobeen.datalog.ide.annotator.DatalogWarningAnnotator"/>
+        <annotator language="Datalog" implementationClass="com.lfrobeen.datalog.ide.annotator.DatalogMissingIncludeFileAnnotator"/>
+
+        <gotoSymbolContributor implementation="com.lfrobeen.datalog.ide.navigation.goto.DatalogChooseByNameContributor"/>
+
+
+        <statementUpDownMover implementation="com.lfrobeen.datalog.ide.actions.mover.DatalogProgramElementUpDownMover"/>
+
+
+        <programRunner implementation="com.lfrobeen.datalog.ide.run.DatalogProgramRunner"/>
+        <configurationType implementation="com.lfrobeen.datalog.ide.run.configuration.DatalogConfigurationType"/>
+        <runConfigurationProducer implementation="com.lfrobeen.datalog.ide.run.configuration.DatalogRunConfigurationProducer"/>
+
+
+        <!-- Color Settings -->
+        <colorSettingsPage implementation="com.lfrobeen.datalog.ide.colors.DatalogColorSettingsPage"/>
+
+        <additionalTextAttributes scheme="Default" file="datalog/ide/colors/DatalogDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="datalog/ide/colors/DatalogDarcula.xml"/>
+
+        <postStartupActivity implementation="com.lfrobeen.datalog.ide.activity.DatalogPluginUpdateActivity"/>
+
+        <applicationService serviceImplementation="com.lfrobeen.datalog.ide.settings.DatalogPluginSettings"/>
+    </extensions>
+
+    <actions>
+        <group id="datalog">
+            <action id="Datalog.NewDatalogFile"
+                    class="com.lfrobeen.datalog.ide.actions.NewDatalogFile"
+                    text="Datalog File"
+                    description="Create new Datalog file">
+                <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
+            </action>
+        </group>
+    </actions>
+
+    <application-components>
+        <component>
+            <implementation-class>com.lfrobeen.datalog.ide.component.DatalogComponent</implementation-class>
+        </component>
+    </application-components>
+</idea-plugin>
