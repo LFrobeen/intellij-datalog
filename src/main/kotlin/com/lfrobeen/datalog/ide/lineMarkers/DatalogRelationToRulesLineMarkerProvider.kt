@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.parentOfType
 import com.lfrobeen.datalog.lang.psi.DatalogClause
+import com.lfrobeen.datalog.lang.psi.DatalogClauseHead
 import com.lfrobeen.datalog.lang.psi.impl.DatalogRelDeclImpl
 
 class DatalogRelationToRulesLineMarkerProvider : RelatedItemLineMarkerProvider() {
@@ -20,7 +21,7 @@ class DatalogRelationToRulesLineMarkerProvider : RelatedItemLineMarkerProvider()
 
         val references =
             ReferencesSearch.search(element)
-                .mapNotNull { it.element.parentOfType<DatalogClause>() }
+                .mapNotNull { it.element.parentOfType<DatalogClauseHead>() }
 
         if (references.isEmpty())
             return
