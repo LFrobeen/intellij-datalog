@@ -23,6 +23,9 @@ object DatalogIcons {
     val MACRO = IconLoader.getIcon("/icons/nodes/macro.svg")
 
     @JvmField
+    val COMMENT = IconLoader.getIcon("/icons/nodes/comment.svg")
+
+    @JvmField
     val FILE = IconLoader.getIcon("/icons/datalog-file.svg")
 
     @JvmField
