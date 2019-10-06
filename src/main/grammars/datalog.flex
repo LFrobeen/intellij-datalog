@@ -81,6 +81,15 @@ MACRO_CONTINUATION = \\[ \t\f]*{LINE_BREAK}
   ".pragma"             { return PRAGMA_DIRECTIVE; }
   ".functor"            { return FUNCTOR_DIRECTIVE; }
 
+  "output"              { return OUTPUT_QUALIFIER; }
+  "input"               { return INPUT_QUALIFIER; }
+  "printsize"           { return PRINTSIZE_QUALIFIER; }
+  "overridable"         { return OVERRIDABLE_QUALIFIER; }
+  "inline"              { return INLINE_QUALIFIER; }
+  "brie"                { return BRIE_QUALIFIER; }
+  "btree"               { return BTREE_QUALIFIER; }
+  "eqrel"               { return EQREL_QUALIFIER; }
+
   "_"                   { return UNDERSCORE; }
   "$"                   { return DOLLAR; }
 

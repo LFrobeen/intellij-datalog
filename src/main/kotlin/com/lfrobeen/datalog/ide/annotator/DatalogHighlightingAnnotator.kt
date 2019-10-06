@@ -54,6 +54,11 @@ class DatalogHighlightingAnnotator : Annotator {
             }
         }
 
+        if (element is DatalogQualifier) {
+            val annotation = holder.createInfoAnnotation(element.getTextRange(), null)
+            annotation.textAttributes = DatalogColors.PREPROCESSOR.textAttributesKey
+        }
+
         if (element is PsiComment) {
             if (element.text.trim().startsWith("/**")) {
                 val annotation = holder.createInfoAnnotation(element.getTextRange(), null)

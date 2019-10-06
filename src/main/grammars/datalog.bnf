@@ -44,6 +44,15 @@
     PRAGMA_DIRECTIVE = ".pragma"
     FUNCTOR_DIRECTIVE = ".functor"
 
+    OUTPUT_QUALIFIER = "output"
+    INPUT_QUALIFIER = "input"
+    PRINTSIZE_QUALIFIER = "printsize"
+    OVERRIDABLE_QUALIFIER = "overridable"
+    INLINE_QUALIFIER = "inline"
+    BRIE_QUALIFIER = "brie"
+    BTREE_QUALIFIER = "btree"
+    EQREL_QUALIFIER = "eqrel"
+
     UNDERSCORE = "_"
     DOLLAR='$'
 
@@ -200,7 +209,8 @@ Decl ::= RelDecl
        | SizeDecl
        | CompInstDecl
 
-RelDecl ::= ".decl" IDENTIFIER <<listCommaParens TypedIdentifier>> ")" { // QUALIFIERS
+
+RelDecl ::= ".decl" IDENTIFIER <<listCommaParens TypedIdentifier>> ")" Qualifier* { // QUALIFIERS
     pin=2
     mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
 }
@@ -358,6 +368,15 @@ BinOp ::= "+" | "-" | "*" | "/" | "%" | "^"
         | "lnot" | "land" | "lor"
 
 RelOp ::= "<" | ">" | "<=" | ">=" | "!=" | "=";
+
+Qualifier ::= OUTPUT_QUALIFIER
+            | INPUT_QUALIFIER
+            | PRINTSIZE_QUALIFIER
+            | OVERRIDABLE_QUALIFIER
+            | INLINE_QUALIFIER
+            | BRIE_QUALIFIER
+            | BTREE_QUALIFIER
+            | EQREL_QUALIFIER
 
 private Number ::= '-'? (NUMBER_HEX | NUMBER_BIN | NUMBER_DEC)
 private Boolean ::= TRUE | FALSE
