@@ -7,14 +7,14 @@ import com.lfrobeen.datalog.DatalogReference
 
 abstract class DatalogReferenceQualifierMixin(node: ASTNode) : ASTWrapperPsiElement(node), DatalogAnyReference {
     override fun getReference(): PsiReference =
-        DatalogReference(headRef() as DatalogReferenceMixin, headRef().textRangeInParent)
+        DatalogReference(headRef() as DatalogReferenceMixin, headRef()?.textRangeInParent)
 
 
     fun baseRef(): DatalogAnyRef? {
         return anyReference?.headRef() ?: children.filterIsInstance<DatalogAnyRef>().first()
     }
 
-    private fun DatalogAnyReference.headRef(): DatalogAnyRef {
-        return children.filterIsInstance<DatalogAnyRef>().last()
+    private fun DatalogAnyReference.headRef(): DatalogAnyRef? {
+        return children.filterIsInstance<DatalogAnyRef>().lastOrNull()
     }
 }

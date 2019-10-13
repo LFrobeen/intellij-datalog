@@ -7,10 +7,8 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.parentOfType
-import com.lfrobeen.datalog.lang.psi.DatalogCompDecl
 import com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin
 import com.lfrobeen.datalog.lang.psi.DatalogProgramElement
-import com.lfrobeen.datalog.lang.psi.DatalogRelDecl
 
 //TODO
 class DatalogDocumentationProvider : AbstractDocumentationProvider() {
@@ -30,16 +28,8 @@ class DatalogDocumentationProvider : AbstractDocumentationProvider() {
     }
 
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
-        if (element is DatalogRelDecl) {
+        if (element is DatalogDeclarationMixin) {
             val declaration = element.text
-
-            return DEFINITION_START + declaration + DEFINITION_END +
-                    CONTENT_START + StringUtil.escapeXml(getDocString(element)).replace("\n", "<br>") +
-                    CONTENT_END
-        }
-
-        if (element is DatalogCompDecl) {
-            val declaration = element.identifier.text
 
             return DEFINITION_START + declaration + DEFINITION_END +
                     CONTENT_START + StringUtil.escapeXml(getDocString(element)).replace("\n", "<br>") +
@@ -62,6 +52,9 @@ class DatalogDocumentationProvider : AbstractDocumentationProvider() {
                     return comment
                         .removePrefix("/**")
                         .removeSuffix("*/")
+                        .split("\n").joinToString("\n") {
+                            it.trim().trimStart { t -> t.isWhitespace() || t == '*' }
+                        }
                 }
                 break
             } else {
