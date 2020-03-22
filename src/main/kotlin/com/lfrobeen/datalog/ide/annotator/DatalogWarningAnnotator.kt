@@ -19,8 +19,7 @@ class DatalogWarningAnnotator : Annotator {
         }
 
         if (element is DatalogAtom) {
-            val relationName = (element.childOfType<DatalogAnyRef>()?.reference?.resolve())
-            val relation = relationName?.parentOfType<DatalogRelDecl>()
+            val relation = (element.childOfType<DatalogAnyRef>()?.reference?.resolve()) as? DatalogRelDecl
 
             if (relation != null) {
                 annotateParameter(holder, relation, element)
