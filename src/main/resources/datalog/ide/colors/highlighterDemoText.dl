@@ -37,7 +37,7 @@ numberOfRelatives(person, num_relatives) :-
 
 .output numberOfRelatives(IO=stdout)
 
-/** This component computes relations for a  */
+/** Component for inferring kinship relations from a is-child-of relation */
 .comp FamilyRelations<TPerson> {
     .decl childOf(child: TPerson, mother: TPerson, father: TPerson)
 
