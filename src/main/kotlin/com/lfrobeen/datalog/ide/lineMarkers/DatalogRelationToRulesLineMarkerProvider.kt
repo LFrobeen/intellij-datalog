@@ -28,7 +28,7 @@ class DatalogRelationToRulesLineMarkerProvider : RelatedItemLineMarkerProvider()
 
         // TODO: use appropriate cell renderer
         val builder = NavigationGutterIconBuilder
-            .create(AllIcons.Gutter.OverridenMethod)
+            .create(AllIcons.Gutter.ImplementedMethod)
             .setTargets(references)
             .setTooltipText("Rules for this relation")
             .setNamer { param ->

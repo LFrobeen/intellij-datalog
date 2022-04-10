@@ -17,7 +17,8 @@ class DatalogBaseComponentLineMarkerProvider : RelatedItemLineMarkerProvider() {
         if (element !is DatalogCompDecl)
             return
 
-        val references =
+        // Usages
+        val derivedDeclarations =
             ReferencesSearch.search(element)
                 .mapNotNull { t ->
                     t.element
@@ -25,20 +26,29 @@ class DatalogBaseComponentLineMarkerProvider : RelatedItemLineMarkerProvider() {
                         .takeIf { it?.componentTyped?.anyRef == t.element }
                 }
 
-        if (references.isEmpty())
-            return
+        if (derivedDeclarations.isNotEmpty()) {
+            val lineMarker = NavigationGutterIconBuilder
+                .create(AllIcons.Gutter.OverridenMethod)
+                .setTargets(derivedDeclarations)
+                .setTooltipText("Derived components")
+                .createLineMarkerInfo(element)
 
-        val builder = NavigationGutterIconBuilder
-            .create(AllIcons.Gutter.OverridenMethod)
-            .setTargets(references)
-            .setTooltipText("Derived components")
-//            .setNamer { param ->
-//                (param as? DatalogClause)?.text
-//                    ?.lines()
-//                    ?.joinToString(separator = " ") { (it.trim() + " ") }
-//                    ?.take(40)
-//            }
 
-        result.add(builder.createLineMarkerInfo(element))
+            result.add(lineMarker)
+        }
+
+        val baseDeclaration = element.componentTyped?.anyRef?.reference?.resolve();
+
+        if (baseDeclaration != null) {
+            val lineMarker = NavigationGutterIconBuilder
+                .create(AllIcons.Gutter.OverridingMethod)
+                .setTargets(baseDeclaration)
+                .setTooltipText("Base component")
+                .createLineMarkerInfo(element)
+
+
+            result.add(lineMarker)
+        }
+
     }
 }
