@@ -354,10 +354,10 @@ Variable ::= IDENTIFIER {
 }
 
 AggregationExpr ::= "count" ":" "{" Predicate "}"
-                  | "mean" ":" Argument "{" Predicate "}"
-                  | "max" ":" Argument "{" Predicate "}"
-                  | "min" ":" Argument "{" Predicate "}"
-                  | "sum" ":" Argument "{" Predicate "}"
+                  | "mean" Argument ":" "{" Predicate "}"
+                  | "max" Argument ":" "{" Predicate "}"
+                  | "min" Argument ":" "{" Predicate "}"
+                  | "sum" Argument ":" "{" Predicate "}"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Types
