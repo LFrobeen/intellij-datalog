@@ -77,6 +77,8 @@
 
     IDENTIFIER = 'regexp:[_?a-zA-Z][_?a-zA-Z0-9]+|[?a-zA-Z]'
 
+    LESS_COLON='<:'
+
     PIPE='|'
     DOT='.'
     NOT='!'
@@ -218,11 +220,10 @@ RelDecl ::= ".decl" IDENTIFIER <<listCommaParens TypedIdentifier>> ")" Qualifier
     mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
 }
 
-TypeDecl ::= ".type" IDENTIFIER "=" TypeDef
+TypeDecl ::= ".type" IDENTIFIER ("=" | "<:") TypeDef
            | ".type" IDENTIFIER
            | ".symbol_type" IDENTIFIER
            | ".number_type" IDENTIFIER
-//           | ".type" IDENTIFIER "<:" TypeDef
 {
     pin(".*")=2
     mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"

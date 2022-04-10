@@ -116,6 +116,8 @@ MACRO_CONTINUATION = \\[ \t\f]*{LINE_BREAK}
 
   "@"                   { return AT; }
 
+  "<:"                  { return LESS_COLON; }
+
   "|"                   { return PIPE; }
   "."                   { return DOT; }
   "!"                   { return NOT; }
