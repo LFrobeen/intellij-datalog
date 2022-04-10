@@ -26,6 +26,7 @@
     ENDIF_DIRECTIVE = "#endif"
     DEFINE_DIRECTIVE = "#define"
 
+    FLOAT_TYPE = "float"
     NUMBER_TYPE = "number"
     SYMBOL_TYPE = "symbol"
 
@@ -229,9 +230,24 @@ FunctorDecl ::= ".functor" IDENTIFIER <<listCommaParens PrimitiveType>> ")" ":" 
     mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
 }
 
+InDeclIO ::= "IO" "=" ("stdin" | "file" | "sqlite")
+InDeclIOOpt ::= "filename" "=" STRING
+              | "compress" "=" STRING
+              | "columns" "=" STRING
+              | "headers" "=" STRING
+              | "rfc4180" "=" ("true" | "false")
+InDeclParam ::= InDeclIO | InDeclIOOpt
+
+OutDeclIO ::= "IO" "=" ("stdout" | "file" | "sqlite")
+OutDeclIOOpt ::= "filename" "=" STRING
+              | "compress" "=" STRING
+              | "columns" "=" STRING
+              | "rfc4180" "=" ("true" | "false")
+OutDeclParam ::= OutDeclIO | OutDeclIOOpt
+
 SizeDecl ::= ".printsize" AnyReference
-OutDecl ::= ".output" AnyReference ("(" "IO" "=" "stdout" ")")?
-InDecl ::= ".input" AnyReference
+OutDecl ::= ".output" AnyReference ("(" OutDeclParam ("," OutDeclParam)* ")")?
+InDecl ::= ".input" AnyReference ("(" InDeclParam ("," InDeclParam)* ")")?
 
 private TypeReference ::= AnyReference
 //private CompReference ::= AnyReference
@@ -347,7 +363,7 @@ AggregationExpr ::= "count" ":" "{" Predicate "}"
 Type ::= AnyReference
        | PrimitiveType
 
-PrimitiveType ::= NUMBER_TYPE | SYMBOL_TYPE
+PrimitiveType ::= FLOAT_TYPE | NUMBER_TYPE | SYMBOL_TYPE
 
 TypeDef ::= EmptyTypeDef
           | RecordTypeDef
