@@ -67,6 +67,7 @@ MACRO_CONTINUATION = \\[ \t\f]*{LINE_BREAK}
 <YYINITIAL> {
   "float"               { return FLOAT_TYPE; }
   "number"              { return NUMBER_TYPE; }
+  "unsigned"            { return UNSIGNED_TYPE; }
   "symbol"              { return SYMBOL_TYPE; }
   "nil"                 { return NIL; }
   ".comp"               { return COMP_DIRECTIVE; }

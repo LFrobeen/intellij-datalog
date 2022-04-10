@@ -41,7 +41,7 @@ class DatalogSyntaxHighlighter : SyntaxHighlighterBase() {
                 DatalogColors.PREPROCESSOR
 
 
-            FLOAT_TYPE, NUMBER_TYPE, SYMBOL_TYPE ->
+            FLOAT_TYPE, NUMBER_TYPE, UNSIGNED_TYPE, SYMBOL_TYPE ->
                 DatalogColors.TYPE_PRIMITIVE
 
             INPUT_DIRECTIVE, OUTPUT_DIRECTIVE, RELATION_DIRECTIVE,

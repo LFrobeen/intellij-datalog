@@ -28,6 +28,7 @@
 
     FLOAT_TYPE = "float"
     NUMBER_TYPE = "number"
+    UNSIGNED_TYPE_TYPE = "unsigned"
     SYMBOL_TYPE = "symbol"
 
     NIL = "nil"
@@ -218,9 +219,10 @@ RelDecl ::= ".decl" IDENTIFIER <<listCommaParens TypedIdentifier>> ")" Qualifier
 }
 
 TypeDecl ::= ".type" IDENTIFIER "=" TypeDef
-          | ".type" IDENTIFIER
-          | ".symbol_type" IDENTIFIER
-          | ".number_type" IDENTIFIER
+           | ".type" IDENTIFIER
+           | ".symbol_type" IDENTIFIER
+           | ".number_type" IDENTIFIER
+//           | ".type" IDENTIFIER "<:" TypeDef
 {
     pin(".*")=2
     mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
@@ -247,8 +249,8 @@ OutDeclIOOpt ::= "filename" "=" STRING
 OutDeclParam ::= OutDeclIO | OutDeclIOOpt
 
 SizeDecl ::= ".printsize" AnyReference
-OutDecl ::= ".output" AnyReference ("(" OutDeclParam ("," OutDeclParam)* ")")?
-InDecl ::= ".input" AnyReference ("(" InDeclParam ("," InDeclParam)* ")")?
+OutDecl ::= ".output" AnyReference (<<listCommaParens OutDeclParam>> ")")?
+InDecl ::= ".input" AnyReference (<<listCommaParens InDeclParam>> ")")?
 
 private TypeReference ::= AnyReference
 //private CompReference ::= AnyReference
@@ -365,7 +367,7 @@ AggregationExpr ::= "count" ":" "{" Predicate "}"
 Type ::= AnyReference
        | PrimitiveType
 
-PrimitiveType ::= FLOAT_TYPE | NUMBER_TYPE | SYMBOL_TYPE
+PrimitiveType ::= FLOAT_TYPE | NUMBER_TYPE | UNSIGNED_TYPE | SYMBOL_TYPE
 
 TypeDef ::= EmptyTypeDef
           | RecordTypeDef
