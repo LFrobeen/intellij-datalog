@@ -12,7 +12,7 @@ import com.lfrobeen.datalog.lang.psi.DatalogCompDecl
 class DatalogBaseComponentLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun collectNavigationMarkers(
         element: PsiElement,
-        result: MutableCollection<in RelatedItemLineMarkerInfo<PsiElement>>
+        result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
         if (element !is DatalogCompDecl)
             return
@@ -31,7 +31,7 @@ class DatalogBaseComponentLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val builder = NavigationGutterIconBuilder
             .create(AllIcons.Gutter.OverridenMethod)
             .setTargets(references)
-            .setTooltipText("Derived Components")
+            .setTooltipText("Derived components")
 //            .setNamer { param ->
 //                (param as? DatalogClause)?.text
 //                    ?.lines()

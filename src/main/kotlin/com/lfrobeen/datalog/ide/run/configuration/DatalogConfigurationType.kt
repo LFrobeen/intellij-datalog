@@ -14,6 +14,10 @@ class DatalogConfigurationType : ConfigurationTypeBase("Datalog Program", "Datal
             override fun createTemplateConfiguration(project: Project): RunConfiguration =
                 DatalogRunConfiguration(project, this)
 
+            override fun getId(): String {
+                return this.name
+            }
+
             override fun createConfiguration(name: String?, template: RunConfiguration): RunConfiguration {
                 val runConfiguration = super.createConfiguration(name, template)
                 if (runConfiguration is DatalogRunConfiguration) {
@@ -27,6 +31,8 @@ class DatalogConfigurationType : ConfigurationTypeBase("Datalog Program", "Datal
             }
         })
     }
+
+
 
     companion object {
         fun getInstance(): DatalogConfigurationType = ConfigurationTypeUtil.findConfigurationType(

@@ -1,33 +1,22 @@
-import org.gradle.api.internal.HasConvention
-import org.jetbrains.grammarkit.tasks.GenerateLexer
-import org.jetbrains.grammarkit.tasks.GenerateParser
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import org.jetbrains.grammarkit.tasks.GenerateLexerTask
+import org.jetbrains.grammarkit.tasks.GenerateParserTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val ideaVersion = "2018.3.3" //prop("ideaVersion")
+val ideaVersion = "2021.3.1" //prop("ideaVersion")
 
-
-repositories {
-    mavenCentral()
-    maven("https://dl.bintray.com/jetbrains/markdown")
-    maven("https://plugins.gradle.org/m2/")
-}
+group = "com.lfrobeen"
+version = "1.0.0"
 
 plugins {
     idea
-    kotlin("jvm") version "1.3.30"
-    id("org.jetbrains.intellij") version "0.4.7"
-    id("org.jetbrains.grammarkit") version "2018.3"
+    kotlin("jvm") version "1.6.20"
+    id("org.jetbrains.intellij") version "1.5.2"
+    id("org.jetbrains.grammarkit") version "2021.2.2"
     id("de.undercouch.download") version "3.4.3"
     id("net.saliman.properties") version "1.4.6"
     id("com.palantir.git-version") version "0.11.0"
 }
 
-idea {
-    module {
-        generatedSourceDirs.add(file("src/main/gen"))
-    }
-}
 
 apply {
     plugin("idea")
@@ -36,82 +25,82 @@ apply {
     plugin("org.jetbrains.intellij")
 }
 
-group = "com.lfrobeen"
-version = "1.0.0"
+repositories {
+    mavenCentral()
+    maven("https://dl.bintray.com/jetbrains/markdown")
+    maven("https://plugins.gradle.org/m2/")
+}
+
+idea {
+    module {
+        generatedSourceDirs.add(file("src/main/gen"))
+    }
+}
 
 intellij {
-    pluginName = "intellij-datalog"
-
-    version = ideaVersion
-    updateSinceUntilBuild = false
-    instrumentCode = false
+    pluginName.set("intellij-datalog")
+    version.set(ideaVersion)
+    updateSinceUntilBuild.set(false)
+    instrumentCode.set(false)
 }
 
-
-val generateLexer = task<GenerateLexer>("generateLexer") {
-    source = "src/main/grammars/datalog.flex"
-    targetDir = "src/main/gen/com/lfrobeen/datalog/lang/lexer"
-    targetClass = "DatalogLexer"
-    purgeOldFiles = true
-}
-
-val generateParser = task<GenerateParser>("generateParser") {
-    source = "src/main/grammars/datalog.bnf"
-    targetRoot = "src/main/gen"
-    pathToParser = "/datalog/lang/parser/DatalogParser.java"
-    pathToPsiRoot = "/datalog/lang/psi"
-    purgeOldFiles = true
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        languageVersion = "1.3"
-        apiVersion = "1.3"
-        freeCompilerArgs = listOf("-Xjvm-default=enable")
-    }
-
-    dependsOn(
-        generateLexer,
-        generateParser
-    )
-}
-
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        languageVersion = "1.3"
-        apiVersion = "1.3"
-        freeCompilerArgs = listOf("-Xjvm-default=enable")
-    }
-}
-
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+configure<JavaPluginExtension> {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 sourceSets {
     main {
         java.srcDirs("src/main/gen")
-        kotlin.srcDirs("src/main/kotlin")
         resources.srcDirs("src/main/resources")
     }
     test {
-        kotlin.srcDirs("src/test/kotlin")
         resources.srcDirs("src/test/resources")
     }
 }
 
-val SourceSet.kotlin: SourceDirectorySet
-    get() =
-        (this as HasConvention)
-            .convention
-            .getPlugin(KotlinSourceSet::class.java)
-            .kotlin
+kotlin {
+    sourceSets {
+        main {
+            kotlin.srcDirs("src/main/kotlin")
+        }
+        test {
+            kotlin.srcDirs("src/test/kotlin")
+        }
+    }
+}
+
+val generateDatalogLexer = task<GenerateLexerTask>("generateDatalogLexer") {
+    source.set("src/main/grammars/datalog.flex")
+    targetDir.set("src/main/gen/com/lfrobeen/datalog/lang/lexer")
+    targetClass.set("DatalogLexer")
+    purgeOldFiles.set(true)
+}
+
+val generateDatalogParser = task<GenerateParserTask>("generateDatalogParser") {
+    source.set("src/main/grammars/datalog.bnf")
+    targetRoot.set("src/main/gen")
+    pathToParser.set("/datalog/lang/parser/DatalogParser.java")
+    pathToPsiRoot.set("/datalog/lang/psi")
+    purgeOldFiles.set(true)
+}
+
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "11"
+        languageVersion = "1.6"
+        apiVersion = "1.5"
+        freeCompilerArgs = listOf("-Xjvm-default=all")
+    }
+
+    dependsOn(
+        generateDatalogLexer,
+        generateDatalogParser
+    )
+}
+
+
+tasks.withType<Copy> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

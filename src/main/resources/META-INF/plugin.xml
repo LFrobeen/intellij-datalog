@@ -21,7 +21,7 @@
 
     <version>1.0.0</version>
 
-    <idea-version since-build="183.2940.10"/>
+    <idea-version since-build="203.5981.155"/>
 
     <depends>com.intellij.modules.lang</depends>
 
