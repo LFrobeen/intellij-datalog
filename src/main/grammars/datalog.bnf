@@ -69,6 +69,7 @@
     FALSE="false"
 
     COUNT="count"
+    MEAN="mean"
     MIN="max"
     MAX="min"
     SUM="sum"
@@ -353,9 +354,10 @@ Variable ::= IDENTIFIER {
 }
 
 AggregationExpr ::= "count" ":" "{" Predicate "}"
-                  | "min" ":" Variable "{" Predicate "}"
-                  | "max" ":" Variable "{" Predicate "}"
-                  | "sum" ":" Variable "{" Predicate "}"
+                  | "mean" ":" Argument "{" Predicate "}"
+                  | "max" ":" Argument "{" Predicate "}"
+                  | "min" ":" Argument "{" Predicate "}"
+                  | "sum" ":" Argument "{" Predicate "}"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Types

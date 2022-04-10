@@ -95,6 +95,7 @@ MACRO_CONTINUATION = \\[ \t\f]*{LINE_BREAK}
   "$"                   { return DOLLAR; }
 
   "count"               { return COUNT; }
+  "mean"                { return MEAN; }
   "max"                 { return MAX; }
   "min"                 { return MIN; }
   "sum"                 { return SUM; }

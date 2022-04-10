@@ -61,7 +61,7 @@ class DatalogSyntaxHighlighter : SyntaxHighlighterBase() {
 
             SEMICOLON, IF -> DatalogColors.KEYWORD
 
-            COUNT, MAX, MIN, SUM ->
+            COUNT, MEAN, MAX, MIN, SUM ->
                 DatalogColors.KEYWORD_AGGREGATION
 
             else -> null
