@@ -17,6 +17,8 @@ class DatalogBaseComponentLineMarkerProvider : RelatedItemLineMarkerProvider() {
         if (element !is DatalogCompDecl)
             return
 
+        val componentIdentifier = element.identifier
+
         // Usages
         val derivedDeclarations =
             ReferencesSearch.search(element)
@@ -31,20 +33,19 @@ class DatalogBaseComponentLineMarkerProvider : RelatedItemLineMarkerProvider() {
                 .create(AllIcons.Gutter.OverridenMethod)
                 .setTargets(derivedDeclarations)
                 .setTooltipText("Derived components")
-                .createLineMarkerInfo(element)
-
+                .createLineMarkerInfo(componentIdentifier)
 
             result.add(lineMarker)
         }
 
-        val baseDeclaration = element.componentTyped?.anyRef?.reference?.resolve();
+        val baseDeclaration = element.componentTyped?.anyRef?.reference?.resolve() as? DatalogCompDecl
 
         if (baseDeclaration != null) {
             val lineMarker = NavigationGutterIconBuilder
                 .create(AllIcons.Gutter.OverridingMethod)
                 .setTargets(baseDeclaration)
                 .setTooltipText("Base component")
-                .createLineMarkerInfo(element)
+                .createLineMarkerInfo(componentIdentifier)
 
 
             result.add(lineMarker)
