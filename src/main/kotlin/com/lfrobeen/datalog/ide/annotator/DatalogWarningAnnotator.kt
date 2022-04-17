@@ -1,12 +1,17 @@
 package com.lfrobeen.datalog.ide.annotator
 
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import com.lfrobeen.datalog.lang.psi.*
 import com.lfrobeen.datalog.lang.psi.impl.DatalogRelDeclImpl
+
 
 class DatalogWarningAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -18,6 +23,24 @@ class DatalogWarningAnnotator : Annotator {
                 holder
                     .newAnnotation(HighlightSeverity.WARNING, "Variable occurs only once in fact or rule.")
                     .range(element.textRange)
+                    .withFix(object : BaseIntentionAction() {
+                        init {
+                            text = "Replace unused variable with \"_\""
+                        }
+
+                        override fun getFamilyName(): String = "Unused variable"
+
+                        override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean = true
+
+                        override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
+                                editor?.document?.replaceString(
+                                    element.textRange.startOffset,
+                                    element.textRange.endOffset,
+                                    "_"
+                                )
+                        }
+
+                    })
                     .create()
             }
         }

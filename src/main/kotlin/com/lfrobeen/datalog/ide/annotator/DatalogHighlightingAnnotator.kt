@@ -37,7 +37,7 @@ class DatalogHighlightingAnnotator : Annotator {
                 }
             } else {
                 holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Declaration not found.")
+                    .newAnnotation(HighlightSeverity.ERROR, "Unresolved reference")
                     .range(element)
                     .create()
             }

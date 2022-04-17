@@ -1,19 +1,10 @@
 package com.lfrobeen.datalog.ide.colors
 
-import com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl
-import com.intellij.lang.annotation.AnnotationSession
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.io.StreamUtil
-import com.intellij.psi.PsiElement
-import com.intellij.testFramework.fixtures.IdeaTestFixtureFactory
-import com.lfrobeen.datalog.ide.annotator.DatalogHighlightingAnnotator
 import com.lfrobeen.datalog.ide.highlight.DatalogSyntaxHighlighter
 import com.lfrobeen.datalog.ide.icons.DatalogIcons
-import com.lfrobeen.datalog.lang.psi.DatalogPsiFactory
-import com.lfrobeen.datalog.lang.psi.childrenOfType
-import java.lang.StringBuilder
 import java.nio.charset.Charset
 
 class DatalogColorSettingsPage : ColorSettingsPage {
