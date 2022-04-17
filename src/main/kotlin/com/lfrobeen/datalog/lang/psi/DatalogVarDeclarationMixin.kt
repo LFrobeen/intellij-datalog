@@ -12,7 +12,7 @@ import com.lfrobeen.datalog.DatalogVariableReference
 import com.lfrobeen.datalog.ide.icons.DatalogIcons
 import javax.swing.Icon
 
-abstract class DatalogVarDeclarationBase(node: ASTNode) : ASTWrapperPsiElement(node),
+abstract class DatalogVarDeclarationMixin(node: ASTNode) : ASTWrapperPsiElement(node),
     DatalogVariable, DatalogDeclaration {
 
     override fun getNameIdentifier(): PsiElement? = getChildOfType(DatalogTypes.IDENTIFIER)

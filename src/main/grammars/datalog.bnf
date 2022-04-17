@@ -26,7 +26,9 @@
     ENDIF_DIRECTIVE = "#endif"
     DEFINE_DIRECTIVE = "#define"
 
+    FLOAT_TYPE = "float"
     NUMBER_TYPE = "number"
+    UNSIGNED_TYPE_TYPE = "unsigned"
     SYMBOL_TYPE = "symbol"
 
     NIL = "nil"
@@ -68,11 +70,14 @@
     FALSE="false"
 
     COUNT="count"
+    MEAN="mean"
     MIN="max"
     MAX="min"
     SUM="sum"
 
     IDENTIFIER = 'regexp:[_?a-zA-Z][_?a-zA-Z0-9]+|[?a-zA-Z]'
+
+    LESS_COLON='<:'
 
     PIPE='|'
     DOT='.'
@@ -215,10 +220,10 @@ RelDecl ::= ".decl" IDENTIFIER <<listCommaParens TypedIdentifier>> ")" Qualifier
     mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
 }
 
-TypeDecl ::= ".type" IDENTIFIER "=" TypeDef
-          | ".type" IDENTIFIER
-          | ".symbol_type" IDENTIFIER
-          | ".number_type" IDENTIFIER
+TypeDecl ::= ".type" IDENTIFIER ("=" | "<:") TypeDef
+           | ".type" IDENTIFIER
+           | ".symbol_type" IDENTIFIER
+           | ".number_type" IDENTIFIER
 {
     pin(".*")=2
     mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
@@ -229,16 +234,31 @@ FunctorDecl ::= ".functor" IDENTIFIER <<listCommaParens PrimitiveType>> ")" ":" 
     mixin = "com.lfrobeen.datalog.lang.psi.DatalogDeclarationMixin"
 }
 
+InDeclIO ::= "IO" "=" ("stdin" | "file" | "sqlite")
+InDeclIOOpt ::= "filename" "=" STRING
+              | "compress" "=" STRING
+              | "columns" "=" STRING
+              | "headers" "=" STRING
+              | "rfc4180" "=" ("true" | "false")
+InDeclParam ::= InDeclIO | InDeclIOOpt
+
+OutDeclIO ::= "IO" "=" ("stdout" | "file" | "sqlite")
+OutDeclIOOpt ::= "filename" "=" STRING
+              | "compress" "=" STRING
+              | "columns" "=" STRING
+              | "rfc4180" "=" ("true" | "false")
+OutDeclParam ::= OutDeclIO | OutDeclIOOpt
+
 SizeDecl ::= ".printsize" AnyReference
-OutDecl ::= ".output" AnyReference ("(" "IO" "=" "stdout" ")")?
-InDecl ::= ".input" AnyReference
+OutDecl ::= ".output" AnyReference (<<listCommaParens OutDeclParam>> ")")?
+InDecl ::= ".input" AnyReference (<<listCommaParens InDeclParam>> ")")?
 
 private TypeReference ::= AnyReference
 //private CompReference ::= AnyReference
 
 AnyRef ::= IDENTIFIER
 AnyReference ::= AnyRef MemberReference* {
-    mixin = "com.lfrobeen.datalog.lang.psi.DatalogReferenceQualifierMixin"
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogQualifiedReferenceMixin"
 }
 
 AnyReferenceWithDot ::= AnyRef MemberReference+ {
@@ -333,13 +353,14 @@ Constant ::= Number
            | NIL
 
 Variable ::= IDENTIFIER {
-    mixin = "com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationBase"
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationMixin"
 }
 
 AggregationExpr ::= "count" ":" "{" Predicate "}"
-                  | "min" ":" Variable "{" Predicate "}"
-                  | "max" ":" Variable "{" Predicate "}"
-                  | "sum" ":" Variable "{" Predicate "}"
+                  | "mean" Argument ":" "{" Predicate "}"
+                  | "max" Argument ":" "{" Predicate "}"
+                  | "min" Argument ":" "{" Predicate "}"
+                  | "sum" Argument ":" "{" Predicate "}"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Types
@@ -347,7 +368,7 @@ AggregationExpr ::= "count" ":" "{" Predicate "}"
 Type ::= AnyReference
        | PrimitiveType
 
-PrimitiveType ::= NUMBER_TYPE | SYMBOL_TYPE
+PrimitiveType ::= FLOAT_TYPE | NUMBER_TYPE | UNSIGNED_TYPE | SYMBOL_TYPE
 
 TypeDef ::= EmptyTypeDef
           | RecordTypeDef

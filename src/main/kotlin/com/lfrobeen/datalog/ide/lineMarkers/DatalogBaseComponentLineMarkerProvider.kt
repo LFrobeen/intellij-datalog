@@ -12,12 +12,15 @@ import com.lfrobeen.datalog.lang.psi.DatalogCompDecl
 class DatalogBaseComponentLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun collectNavigationMarkers(
         element: PsiElement,
-        result: MutableCollection<in RelatedItemLineMarkerInfo<PsiElement>>
+        result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
         if (element !is DatalogCompDecl)
             return
 
-        val references =
+        val componentIdentifier = element.identifier
+
+        // Usages
+        val derivedDeclarations =
             ReferencesSearch.search(element)
                 .mapNotNull { t ->
                     t.element
@@ -25,20 +28,28 @@ class DatalogBaseComponentLineMarkerProvider : RelatedItemLineMarkerProvider() {
                         .takeIf { it?.componentTyped?.anyRef == t.element }
                 }
 
-        if (references.isEmpty())
-            return
+        if (derivedDeclarations.isNotEmpty()) {
+            val lineMarker = NavigationGutterIconBuilder
+                .create(AllIcons.Gutter.OverridenMethod)
+                .setTargets(derivedDeclarations)
+                .setTooltipText("Derived components")
+                .createLineMarkerInfo(componentIdentifier)
 
-        val builder = NavigationGutterIconBuilder
-            .create(AllIcons.Gutter.OverridenMethod)
-            .setTargets(references)
-            .setTooltipText("Derived Components")
-//            .setNamer { param ->
-//                (param as? DatalogClause)?.text
-//                    ?.lines()
-//                    ?.joinToString(separator = " ") { (it.trim() + " ") }
-//                    ?.take(40)
-//            }
+            result.add(lineMarker)
+        }
 
-        result.add(builder.createLineMarkerInfo(element))
+        val baseDeclaration = element.componentTyped?.anyRef?.reference?.resolve() as? DatalogCompDecl
+
+        if (baseDeclaration != null) {
+            val lineMarker = NavigationGutterIconBuilder
+                .create(AllIcons.Gutter.OverridingMethod)
+                .setTargets(baseDeclaration)
+                .setTooltipText("Base component")
+                .createLineMarkerInfo(componentIdentifier)
+
+
+            result.add(lineMarker)
+        }
+
     }
 }

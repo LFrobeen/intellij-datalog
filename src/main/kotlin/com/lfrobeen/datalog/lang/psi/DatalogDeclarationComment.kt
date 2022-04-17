@@ -4,13 +4,13 @@ import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import com.intellij.psi.impl.source.tree.PsiCoreCommentImpl
+import com.intellij.psi.impl.source.tree.PsiCommentImpl
 import com.intellij.psi.tree.IElementType
 import com.lfrobeen.datalog.ide.icons.DatalogIcons
 import javax.swing.Icon
 
 // TODO: replace this with proper comment lexing
-class DatalogDeclarationComment(type: IElementType, text: CharSequence) : PsiCoreCommentImpl(type, text),
+class DatalogDeclarationComment(type: IElementType, text: CharSequence) : PsiCommentImpl(type, text),
     PsiNameIdentifierOwner {
 
     override fun getNameIdentifier(): PsiElement? = this

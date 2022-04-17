@@ -13,7 +13,7 @@ class NewDatalogFile : CreateFileFromTemplateAction(
     DatalogIcons.FILE
 ) {
     override fun buildDialog(
-        project: Project?, directory: PsiDirectory?, builder: CreateFileFromTemplateDialog.Builder
+        project: Project, directory: PsiDirectory, builder: CreateFileFromTemplateDialog.Builder
     ) {
         builder.setTitle("New Datalog File")
 
