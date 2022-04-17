@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val ideaVersion = "2021.3.1" //prop("ideaVersion")
 
 group = "com.lfrobeen"
-version = "1.0.0"
+version = "1.1.0"
 
 plugins {
     idea
