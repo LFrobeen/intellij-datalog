@@ -13,6 +13,7 @@
  * Fix bug in reference resolution logic (#3).
  * Fix missing jump-to-relation line markers for fact statements.
  * Improve jump-to-base / jump-to-sub-components line markers for components.
+ * Add quick-fix for replacing unused variables with wildcards in statements.
 
 ### Performance and Stability
  * Replace usages of deprecated APIs (#6).
