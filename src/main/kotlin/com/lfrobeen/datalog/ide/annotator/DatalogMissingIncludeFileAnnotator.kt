@@ -21,26 +21,23 @@ class DatalogMissingIncludeFileAnnotator : Annotator {
         val directory = element.containingFile.containingDirectory
         val fileName = element.string.text
 
+        val textRange = element.string.textRange.let {
+            TextRange.from(
+                it.startOffset + 1,
+                it.length - 2
+            )
+        }
+
         holder
             .newAnnotation(HighlightSeverity.ERROR, "File not found")
-            .range(element.string.textRange.let {
-                TextRange.from(
-                    it.startOffset + 1,
-                    it.length - 2
-                )
-            })
+            .range(textRange)
             .newFix(
                 CreateFilePathFix(
                     element,
                     NewFileLocation(listOf(TargetDirectory(directory)), fileName.trim('"'))
                 ) { "" }
             )
-            .range(element.string.textRange.let {
-                TextRange.from(
-                    it.startOffset + 1,
-                    it.length - 2
-                )
-            })
+            .range(textRange)
             .registerFix()
             .create()
     }
