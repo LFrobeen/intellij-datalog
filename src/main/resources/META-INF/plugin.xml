@@ -12,17 +12,26 @@
 
     <change-notes>
         <![CDATA[
-        <p>1.1.0</p>
+        <h3 id="syntax-and-language-support">Syntax and Language Support</h3>
         <ul>
-            <li>Fix annotations for relation arity mistakes.</li>
-            <li>Extend documentation parsing to all declaration types (e.g. preprocessor definitions, types, etc.).</li>
-            <li>Include comment declarations in code completion.</li>
-            <li>Fix rule lookup via gutter-icon.</li>
-            <li>Add support for relation qualifiers.</li>
+        <li>Add support for base type syntax (#4).</li>
+        <li>Add support <code>float</code> and <code>unsigned</code> data types.</li>
+        <li>Fix parsing for aggregations; add <code>mean</code> aggregator.</li>
+        <li>Improve support for parameters of <code>.input</code> and <code>.oudput</code> directives.</li>
         </ul>
-        <p>1.0.0</p>
+        <h3 id="editor">Editor</h3>
         <ul>
-            <li>Initial release of this plugin.</li>
+        <li>Fix syntax highlighting of <code>#include</code> directives.</li>
+        <li>Fix bug in reference resolution logic (#3).</li>
+        <li>Fix missing jump-to-relation line markers for fact statements.</li>
+        <li>Improve jump-to-base / jump-to-sub-components line markers for components.</li>
+        <li>Add quick-fix for replacing unused variables with wildcards in statements.</li>
+        </ul>
+        <h3 id="performance-and-stability">Performance and Stability</h3>
+        <ul>
+        <li>Replace usages of deprecated APIs (#6).</li>
+        <li>Fix performance issues for line marker generation.</li>
+        <li>Use latest IntelliJ Plugin SDK.</li>
         </ul>
         ]]>
     </change-notes>
