@@ -1,6 +1,6 @@
 # Changelog 
 
-## 1.2.0
+## 2.0.0
 
 ### Syntax and Language Support
 * Add support for base type syntax (#4).

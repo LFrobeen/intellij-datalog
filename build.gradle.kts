@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val ideaVersion = "2021.3.1" //prop("ideaVersion")
 
 group = "com.lfrobeen"
-version = "1.2.0"
+version = "2.0.0"
 
 plugins {
     idea
@@ -44,7 +44,7 @@ intellij {
     instrumentCode.set(false)
 
     // https://plugins.jetbrains.com/docs/intellij/annotator.html#required-project-configuration-changes
-    plugins.set(listOf("com.intellij.java"))
+    // plugins.set(listOf("com.intellij.java"))
 }
 
 configure<JavaPluginExtension> {
