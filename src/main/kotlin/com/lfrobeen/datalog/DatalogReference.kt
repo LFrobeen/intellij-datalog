@@ -7,6 +7,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.lfrobeen.datalog.lang.psi.*
 
 
+// Reference element is not the same element for which references were queried
+// reference: com.lfrobeen.datalog.DatalogReference; reference element: com.lfrobeen.datalog.lang.psi.impl.DatalogAnyRefImpl
+
 class DatalogReference(element: DatalogReferenceMixin, textRange: TextRange? = null) :
     PsiReferenceBase<DatalogReferenceMixin>(element, textRange ?: element.textRangeInParent), ResolvingHint {
 
@@ -17,7 +20,7 @@ class DatalogReference(element: DatalogReferenceMixin, textRange: TextRange? = n
     override fun canResolveTo(elementClass: Class<out PsiElement>?): Boolean {
         return when (elementClass) {
             is DatalogDeclarationMixin -> true
-            is DatalogVarDeclarationBase -> true
+            is DatalogVarDeclarationMixin -> true
             else -> false
         }
     }

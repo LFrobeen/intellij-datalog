@@ -353,7 +353,7 @@ Constant ::= Number
            | NIL
 
 Variable ::= IDENTIFIER {
-    mixin = "com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationBase"
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationMixin"
 }
 
 AggregationExpr ::= "count" ":" "{" Predicate "}"

@@ -60,7 +60,7 @@
         <lang.elementManipulator forClass="com.lfrobeen.datalog.lang.psi.DatalogReferenceMixin"
                                  implementationClass="com.lfrobeen.datalog.lang.psi.DatalogElementManipulator"/>
 
-        <lang.elementManipulator forClass="com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationBase"
+        <lang.elementManipulator forClass="com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationMixin"
                                  implementationClass="com.lfrobeen.datalog.lang.psi.DatalogVariableManipulator"/>
 
         <codeInsight.parameterInfo language="Datalog"
