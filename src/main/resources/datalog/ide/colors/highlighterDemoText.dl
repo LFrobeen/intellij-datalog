@@ -1,19 +1,19 @@
-#ifndef FAMILY_FACT_COMP
-#define FAMILY_FACT_COMP
+#ifndef <MACRO>FAMILY_FACT_COMP</MACRO>
+#define <MACRO>FAMILY_FACT_COMP</MACRO>
 
 #include "my-utils.dl"
 
 // Types
-.symbol_type Name
-.number_type Year
+.symbol_type <TYPE_DERIVED>Name</TYPE_DERIVED>
+.number_type <TYPE_DERIVED>Year</TYPE_DERIVED>
 
-.type PersonType = [
-    name: Name,
-    bornIn: Year
+.type <TYPE_DERIVED>PersonType</TYPE_DERIVED> = [
+    name: <TYPE_DERIVED>Name</TYPE_DERIVED>,
+    bornIn: <TYPE_DERIVED>Year</TYPE_DERIVED>
 ]
 
 // Helper Macros
-#define PERSON(name, year) [name, year]
+#define <MACRO>PERSON</MACRO>(name, year) [name, year]
 
 // Constants
 #define ALICE PERSON("Alice", 1962)
@@ -22,44 +22,44 @@
 #define EVE   PERSON("Eve", 1984)
 
 // Component Instances
-.init family = FamilyRelations<PersonType>
+.init <INSTANCE>family</INSTANCE> = <COMPONENT>FamilyRelations</COMPONENT><<TYPE_DERIVED>PersonType</TYPE_DERIVED>>
 
 // Initialize the component here
-family.childOf(DAVE, ALICE, BOB).
-family.childOf(EVE, ALICE, BOB).
-family.childOf(BOB, ["Grandma", 1940], ["Grandpa", 1938]).
+<INSTANCE>family</INSTANCE>.<RELATION>childOf</RELATION>(<VARIABLE>DAVE</VARIABLE>, <VARIABLE>ALICE</VARIABLE>, <VARIABLE>BOB</VARIABLE>).
+<INSTANCE>family</INSTANCE>.<RELATION>childOf</RELATION>(<VARIABLE>EVE</VARIABLE>, <VARIABLE>ALICE</VARIABLE>, <VARIABLE>BOB</VARIABLE>).
+<INSTANCE>family</INSTANCE>.<RELATION>childOf</RELATION>(<VARIABLE>BOB</VARIABLE>, ["Grandma", 1940], ["Grandpa", 1938]).
 
-.decl numberOfRelatives(person: PersonType, num_relatives: number)
+.decl <RELATION>numberOfRelatives</RELATION>(<VARIABLE>person</VARIABLE>: <TYPE_DERIVED>PersonType</TYPE_DERIVED>, <VARIABLE>num_relatives</VARIABLE>: number)
 
-numberOfRelatives(person, num_relatives) :-
-    family.related(person, _),
-    num_relatives = count : { family.related(person, _) }.
+<RELATION>numberOfRelatives</RELATION>(<VARIABLE>person</VARIABLE>, <VARIABLE>num_relatives</VARIABLE>) :-
+    <INSTANCE>family</INSTANCE>.<RELATION>related</RELATION>(<VARIABLE>person</VARIABLE>, _),
+    <VARIABLE>num_relatives</VARIABLE> = count : { <INSTANCE>family</INSTANCE>.<RELATION>related</RELATION>(<VARIABLE>person</VARIABLE>, _) }.
 
-.output numberOfRelatives(IO=stdout)
+.output <RELATION>numberOfRelatives</RELATION>(IO=stdout)
 
 /** Component for inferring kinship relations from a is-child-of relation */
-.comp FamilyRelations<TPerson> {
-    .decl childOf(child: TPerson, mother: TPerson, father: TPerson)
+.comp <COMPONENT>FamilyRelations<COMPONENT><<TYPE_DERIVED>TPerson</TYPE_DERIVED>> {
+    .decl <RELATION>childOf</RELATION>(<VARIABLE>child</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>, <VARIABLE>mother</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>, <VARIABLE>father</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>)
 
-    .decl related(s: TPerson, p: TPerson)
+    .decl <RELATION>related</RELATION>(<VARIABLE>s</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>, <VARIABLE>p</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>)
 
-    .decl descendantOf(s: TPerson, p: TPerson)
-    .decl commonAncestor(s: TPerson, p: TPerson)
+    .decl <RELATION>descendantOf</RELATION>(<VARIABLE>s</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>, <VARIABLE>p</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>)
+    .decl <RELATION>commonAncestor</RELATION>(<VARIABLE>s</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>, <VARIABLE>p</VARIABLE>: <TYPE_DERIVED>TPerson</TYPE_DERIVED>)
 
-    descendantOf(C, P) :- childOf(C, P, _).
-    descendantOf(C, P) :- childOf(C, _, P).
+    <RELATION>descendantOf</RELATION>(<VARIABLE>C</VARIABLE>, <VARIABLE>P</VARIABLE>) :- <RELATION>childOf</RELATION>(<VARIABLE>C</VARIABLE>, <VARIABLE>P</VARIABLE>, _).
+    <RELATION>descendantOf</RELATION>(<VARIABLE>C</VARIABLE>, <VARIABLE>P</VARIABLE>) :- <RELATION>childOf</RELATION>(<VARIABLE>C</VARIABLE>, _, <VARIABLE>P</VARIABLE>).
 
-    descendantOf(C, G) :- descendantOf(C, P),
-                          descendantOf(P, G).
+    <RELATION>descendantOf</RELATION>(<VARIABLE>C</VARIABLE>, <VARIABLE>G</VARIABLE>) :- <RELATION>descendantOf</RELATION>(<VARIABLE>C</VARIABLE>, <VARIABLE>P</VARIABLE>),
+                          <RELATION>descendantOf</RELATION>(<VARIABLE>P</VARIABLE>, <VARIABLE>G</VARIABLE>).
 
-    commonAncestor(C1, C2) :-
-        descendantOf(C1, A),
-        descendantOf(C2, A),
-        C1 != C2.
+    <RELATION>commonAncestor</RELATION>(<VARIABLE>C1</VARIABLE>, <VARIABLE>C2</VARIABLE>) :-
+        <RELATION>descendantOf</RELATION>(<VARIABLE>C1</VARIABLE>, <VARIABLE>A</VARIABLE>),
+        <RELATION>descendantOf</RELATION>(<VARIABLE>C2</VARIABLE>, <VARIABLE>A</VARIABLE>),
+        <VARIABLE>C1</VARIABLE> != <VARIABLE>C2</VARIABLE>.
 
-    related(A, B) :- commonAncestor(A, B).
-    related(A, B) :- descendantOf(A, B).
-    related(A, B) :- related(B, A).
+    <RELATION>related</RELATION>(<VARIABLE>A</VARIABLE>, <VARIABLE>B</VARIABLE>) :- <RELATION>commonAncestor</RELATION>(<VARIABLE>A</VARIABLE>, <VARIABLE>B</VARIABLE>).
+    <RELATION>related</RELATION>(<VARIABLE>A</VARIABLE>, <VARIABLE>B</VARIABLE>) :- <RELATION>descendantOf</RELATION>(<VARIABLE>A</VARIABLE>, <VARIABLE>B</VARIABLE>).
+    <RELATION>related</RELATION>(<VARIABLE>A</VARIABLE>, <VARIABLE>B</VARIABLE>) :- <RELATION>related</RELATION>(<VARIABLE>B</VARIABLE>, <VARIABLE>A</VARIABLE>).
 }
 
 #endif
