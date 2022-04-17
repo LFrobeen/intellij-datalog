@@ -5,19 +5,19 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.util.PsiTreeUtil
 import com.lfrobeen.datalog.lang.psi.*
-
+import com.lfrobeen.datalog.lang.psi.impl.DatalogCompDeclImpl
 
 class DatalogReference(element: DatalogReferenceMixin, textRange: TextRange? = null) :
     PsiReferenceBase<DatalogReferenceMixin>(element, textRange ?: element.textRangeInParent), ResolvingHint {
 
     companion object {
-        private val RESOLVER = ResolveCache.AbstractResolver { ref: DatalogReference, _: Boolean -> ref.resolveInner() }
+        private val RESOLVER = ResolveCache.AbstractResolver { ref: DatalogReference, _: Boolean -> ref.resolveImpl() }
     }
 
     override fun canResolveTo(elementClass: Class<out PsiElement>?): Boolean {
         return when (elementClass) {
             is DatalogDeclarationMixin -> true
-            is DatalogVarDeclarationBase -> true
+            is DatalogVarDeclarationMixin -> true
             else -> false
         }
     }
@@ -26,17 +26,32 @@ class DatalogReference(element: DatalogReferenceMixin, textRange: TextRange? = n
         return ResolveCache.getInstance(element.project).resolveWithCaching(this, RESOLVER, false, false)
     }
 
-    private fun resolveInner(): PsiNameIdentifierOwner? {
-        val qualifier = element.parent as? DatalogReferenceQualifierMixin
-        val qualifierInst = qualifier?.baseRef().takeIf { it != element }?.reference?.resolve() as? DatalogCompInstDecl
-        val qualifierDecl = qualifierInst?.componentTyped?.anyRef?.reference?.resolve()
+    private fun resolveImpl(): PsiNameIdentifierOwner? {
+        val qualifiedReference = element.parent as? DatalogQualifiedReferenceMixin
+        val qualifier = qualifiedReference?.qualifierRef()?.takeIf { it != element } // in case of [[QualifiedRef -> Ref Ref ]]
 
+        if (qualifier == null) {
+            return resolveByTreeWalkUp(element, null)
+        }
+
+        // Qualified reference handling
+        val qualifierInst = qualifier.reference?.resolve() as? DatalogCompInstDecl
+        val qualifierDecl = qualifierInst?.componentTyped?.anyRef?.reference?.resolve() as? DatalogCompDeclImpl
+
+        if (qualifierDecl == null) {
+            return null
+        }
+
+        return resolveByTreeWalkUp(qualifierDecl, qualifierDecl)
+    }
+
+    private fun resolveByTreeWalkUp(scopeEntrance: PsiElement, scopeUpperLimit: PsiElement?): PsiNameIdentifierOwner? {
         val processor = DatalogResolvingScopeProcessor(this)
 
         PsiTreeUtil.treeWalkUp(
             processor,
-            qualifierDecl ?: element,
-            null,
+            scopeEntrance,
+            scopeUpperLimit,
             ResolveState.initial()
         )
 

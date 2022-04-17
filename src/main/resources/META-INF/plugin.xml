@@ -12,17 +12,36 @@
 
     <change-notes>
         <![CDATA[
-        <p>1.0.0</p>
+        <h3 id="syntax-and-language-support">Syntax and Language Support</h3>
         <ul>
-            <li>Initial release of this plugin.</li>
+        <li>Add support for base type syntax.</li>
+        <li>Add support <code>float</code> and <code>unsigned</code> data types.</li>
+        <li>Fix parsing for aggregations; add <code>mean</code> aggregator.</li>
+        <li>Improve support for parameters of <code>.input</code> and <code>.oudput</code> directives.</li>
+        </ul>
+        <h3 id="editor">Editor</h3>
+        <ul>
+        <li>Fix syntax highlighting of <code>#include</code> directives.</li>
+        <li>Fix bug in reference resolution logic.</li>
+        <li>Fix missing jump-to-relation line markers for fact statements.</li>
+        <li>Improve jump-to-base / jump-to-sub-components line markers for components.</li>
+        <li>Add quick-fix for replacing unused variables with wildcards in statements.</li>
+        </ul>
+        <h3 id="performance-and-stability">Performance and Stability</h3>
+        <ul>
+        <li>Replace usages of deprecated APIs.</li>
+        <li>Fix performance issues for line marker generation.</li>
+        <li>Use latest IntelliJ Plugin SDK.</li>
         </ul>
         ]]>
     </change-notes>
 
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 
-    <idea-version since-build="183.2940.10"/>
+    <idea-version since-build="203.5981.155"/>
 
+    <!-- https://plugins.jetbrains.com/docs/intellij/annotator.html#required-project-configuration-changes -->
+    <!-- <depends>com.intellij.java</depends> -->
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -60,7 +79,7 @@
         <lang.elementManipulator forClass="com.lfrobeen.datalog.lang.psi.DatalogReferenceMixin"
                                  implementationClass="com.lfrobeen.datalog.lang.psi.DatalogElementManipulator"/>
 
-        <lang.elementManipulator forClass="com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationBase"
+        <lang.elementManipulator forClass="com.lfrobeen.datalog.lang.psi.DatalogVarDeclarationMixin"
                                  implementationClass="com.lfrobeen.datalog.lang.psi.DatalogVariableManipulator"/>
 
         <codeInsight.parameterInfo language="Datalog"

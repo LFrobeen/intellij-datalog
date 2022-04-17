@@ -2,8 +2,10 @@ package com.lfrobeen.datalog.ide.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parentOfType
 import com.lfrobeen.datalog.ide.colors.DatalogColors
 import com.lfrobeen.datalog.lang.psi.*
 
@@ -27,42 +29,62 @@ class DatalogHighlightingAnnotator : Annotator {
             if (decl != null) {
                 val style = styleForDeclType(decl)
                 if (style != null) {
-                    val annotation = holder.createInfoAnnotation(element.textRange, null)
-                    annotation.textAttributes = style.textAttributesKey
+                    holder
+                        .newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(style.textAttributesKey)
+                        .range(element)
+                        .create()
                 }
             } else {
-                holder.createErrorAnnotation(element.textRange, "Declaration not found.")
+                holder
+                    .newAnnotation(HighlightSeverity.ERROR, "Unresolved reference")
+                    .range(element)
+                    .create()
             }
         }
 
         if (element is DatalogDeclarationMixin) {
             val style = styleForDeclType(element)
             if (style != null) {
-                val annotation = holder.createInfoAnnotation(element.nameIdentifier.textRange, null)
-                annotation.textAttributes = style.textAttributesKey
+                holder
+                    .newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .textAttributes(style.textAttributesKey)
+                    .range(element.nameIdentifier)
+                    .create()
             }
         }
 
         if (element is DatalogVariable) {
-            val annotation = holder.createInfoAnnotation(element.identifier.textRange, null)
+            val annotationBuilder = holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.identifier)
             val decl = element.reference?.resolve()
 
-            if (decl is DatalogMacroDecl && styleForDeclType(decl) != null) {
-                annotation.textAttributes = styleForDeclType(decl)!!.textAttributesKey
+            // TODO: This is supposed to enable highlighting of macro arguments that refer to components or types ect
+            if (decl != null && styleForDeclType(decl) != null && element.parentOfType<DatalogMacroInvocation>() != null) {
+                annotationBuilder
+                    .textAttributes(styleForDeclType(decl)!!.textAttributesKey)
+                    .create()
             } else {
-                annotation.textAttributes = DatalogColors.VARIABLE.textAttributesKey
+                annotationBuilder
+                    .textAttributes(DatalogColors.VARIABLE.textAttributesKey)
+                    .create()
             }
         }
 
         if (element is DatalogQualifier) {
-            val annotation = holder.createInfoAnnotation(element.getTextRange(), null)
-            annotation.textAttributes = DatalogColors.PREPROCESSOR.textAttributesKey
+            holder
+                .newSilentAnnotation(HighlightSeverity.INFORMATION)
+                .textAttributes(DatalogColors.PREPROCESSOR.textAttributesKey)
+                .range(element)
+                .create()
         }
 
         if (element is PsiComment) {
             if (element.text.trim().startsWith("/**")) {
-                val annotation = holder.createInfoAnnotation(element.getTextRange(), null)
-                annotation.textAttributes = DatalogColors.DOC_COMMENT.textAttributesKey
+                holder
+                    .newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .textAttributes(DatalogColors.DOC_COMMENT.textAttributesKey)
+                    .range(element)
+                    .create()
             }
         }
     }

@@ -41,7 +41,7 @@ class DatalogSyntaxHighlighter : SyntaxHighlighterBase() {
                 DatalogColors.PREPROCESSOR
 
 
-            NUMBER_TYPE, SYMBOL_TYPE ->
+            FLOAT_TYPE, NUMBER_TYPE, UNSIGNED_TYPE, SYMBOL_TYPE ->
                 DatalogColors.TYPE_PRIMITIVE
 
             INPUT_DIRECTIVE, OUTPUT_DIRECTIVE, RELATION_DIRECTIVE,
@@ -61,7 +61,7 @@ class DatalogSyntaxHighlighter : SyntaxHighlighterBase() {
 
             SEMICOLON, IF -> DatalogColors.KEYWORD
 
-            COUNT, MAX, MIN, SUM ->
+            COUNT, MEAN, MAX, MIN, SUM ->
                 DatalogColors.KEYWORD_AGGREGATION
 
             else -> null

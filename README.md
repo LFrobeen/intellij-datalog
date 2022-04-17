@@ -6,7 +6,7 @@
 <br>
 
 # Datalog Plugin for the IntelliJ Platform
-
+For a list of changes in the newest version, please refer to the [changelog](./CHANGELOG.md).
 
 ## Features
 

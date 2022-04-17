@@ -8,7 +8,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 import com.lfrobeen.datalog.lang.DatalogLanguage
 import com.lfrobeen.datalog.lang.psi.DatalogCompInstDecl
-import com.lfrobeen.datalog.lang.psi.DatalogReferenceQualifierMixin
+import com.lfrobeen.datalog.lang.psi.DatalogQualifiedReferenceMixin
 
 class DatalogReferenceCompletionContributor : CompletionContributor() {
 
@@ -27,7 +27,7 @@ class DatalogReferenceCompletionContributor : CompletionContributor() {
                 ) {
                     val position = parameters.position
 
-                    val qualifier = position.parentOfType<DatalogReferenceQualifierMixin>()?.baseRef()
+                    val qualifier = position.parentOfType<DatalogQualifiedReferenceMixin>()?.qualifierRef()
                     val qualifierInst = qualifier?.reference?.resolve() as? DatalogCompInstDecl
                     val qualifierDecl = qualifierInst?.componentTyped?.anyRef?.reference?.resolve()
 

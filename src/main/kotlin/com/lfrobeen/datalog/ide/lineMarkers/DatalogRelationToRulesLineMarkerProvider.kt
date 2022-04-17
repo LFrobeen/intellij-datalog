@@ -9,26 +9,29 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.parentOfType
 import com.lfrobeen.datalog.lang.psi.DatalogClause
 import com.lfrobeen.datalog.lang.psi.DatalogClauseHead
+import com.lfrobeen.datalog.lang.psi.DatalogFact
 import com.lfrobeen.datalog.lang.psi.impl.DatalogRelDeclImpl
 
 class DatalogRelationToRulesLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun collectNavigationMarkers(
         element: PsiElement,
-        result: MutableCollection<in RelatedItemLineMarkerInfo<PsiElement>>
+        result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
         if (element !is DatalogRelDeclImpl)
             return
 
         val references =
             ReferencesSearch.search(element)
-                .mapNotNull { it.element.parentOfType<DatalogClauseHead>() }
+                .mapNotNull {
+                    it.element.parentOfType<DatalogClauseHead>() ?: it.element.parentOfType<DatalogFact>()
+                }
 
         if (references.isEmpty())
             return
 
         // TODO: use appropriate cell renderer
         val builder = NavigationGutterIconBuilder
-            .create(AllIcons.Gutter.OverridenMethod)
+            .create(AllIcons.Gutter.ImplementedMethod)
             .setTargets(references)
             .setTooltipText("Rules for this relation")
             .setNamer { param ->
@@ -38,6 +41,6 @@ class DatalogRelationToRulesLineMarkerProvider : RelatedItemLineMarkerProvider()
                     ?.take(40)
             }
 
-        result.add(builder.createLineMarkerInfo(element))
+        result.add(builder.createLineMarkerInfo(element.identifier))
     }
 }
