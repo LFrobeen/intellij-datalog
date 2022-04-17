@@ -31,6 +31,8 @@
 
     <idea-version since-build="203.5981.155"/>
 
+    <!-- https://plugins.jetbrains.com/docs/intellij/annotator.html#required-project-configuration-changes -->
+    <depends>com.intellij.java</depends>
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">

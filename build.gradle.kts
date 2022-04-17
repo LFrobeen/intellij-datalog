@@ -42,6 +42,9 @@ intellij {
     version.set(ideaVersion)
     updateSinceUntilBuild.set(false)
     instrumentCode.set(false)
+
+    // https://plugins.jetbrains.com/docs/intellij/annotator.html#required-project-configuration-changes
+    plugins.set(listOf("com.intellij.java"))
 }
 
 configure<JavaPluginExtension> {
