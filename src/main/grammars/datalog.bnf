@@ -258,7 +258,7 @@ private TypeReference ::= AnyReference
 
 AnyRef ::= IDENTIFIER
 AnyReference ::= AnyRef MemberReference* {
-    mixin = "com.lfrobeen.datalog.lang.psi.DatalogReferenceQualifierMixin"
+    mixin = "com.lfrobeen.datalog.lang.psi.DatalogQualifiedReferenceMixin"
 }
 
 AnyReferenceWithDot ::= AnyRef MemberReference+ {
